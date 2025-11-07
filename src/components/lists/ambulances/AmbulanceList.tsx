@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAmbulancesStore, useDeleteAmbulance } from '../../../redux/features/ambulances/hooks';
+import { StatusModal } from '../../modal/StatusModal';
 
 type Column = {
   id: keyof Ambulance;
@@ -54,23 +55,37 @@ export function AmbulanceList() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data, loading, error, meta, dispatchfetchAmbulances } = useAmbulancesStore();
   const { deleteAmbulance } = useDeleteAmbulance();
+  const [confirmModalOpen, setConfirmModalOpen] = React.useState(false);
+  const [ambulanceToDelete, setAmbulanceToDelete] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    dispatchfetchAmbulances({ page: page + 1, limit: rowsPerPage });
+    const apiPage = page + 1;
+    dispatchfetchAmbulances({ page: apiPage, limit: rowsPerPage });
   }, [page, rowsPerPage, dispatchfetchAmbulances]);
 
-  const handleDelete = async (ambulanceId: string) => {
-    if (window.confirm('Are you sure you want to delete this ambulance?')) {
-      try {
-        await deleteAmbulance(ambulanceId).unwrap();
-        if (data.length === 1 && page > 0) {
-          
-          setPage(page - 1);
-        }
-      } catch (err) {
-        console.error('Failed to delete ambulance:', err);
+  const handleDeleteClick = (ambulanceId: string) => {
+    setAmbulanceToDelete(ambulanceId);
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!ambulanceToDelete) return;
+    
+    try {
+      await deleteAmbulance(ambulanceToDelete).unwrap();
+      if (data.length === 1 && page > 0) {
+        setPage(page - 1);
       }
+      setAmbulanceToDelete(null);
+    } catch (err) {
+      console.error('Failed to delete ambulance:', err);
+      setAmbulanceToDelete(null);
     }
+  };
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModalOpen(false);
+    setAmbulanceToDelete(null);
   };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -81,8 +96,8 @@ export function AmbulanceList() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newRowsPerPage = +event.target.value;
-    setRowsPerPage(newRowsPerPage);
     setPage(0);
+    setRowsPerPage(newRowsPerPage);
   };
 
   const rows: Ambulance[] = React.useMemo(() => {
@@ -100,7 +115,17 @@ export function AmbulanceList() {
   }, [data]);
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }} variant="outlined">
+    <>
+      <StatusModal
+        open={confirmModalOpen}
+        onClose={handleCloseConfirmModal}
+        type="confirm"
+        message="Are you sure you want to delete this ambulance? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+      <Paper sx={{ width: '100%', overflow: 'hidden' }} variant="outlined">
       <Typography variant="subtitle1" sx={{ px: 2, pt: 2 }}>
         Ambulances
       </Typography>
@@ -153,7 +178,7 @@ export function AmbulanceList() {
                         <IconButton
                           color="error"
                           size="small"
-                          onClick={() => handleDelete(ambulanceData?.id || '')}
+                          onClick={() => handleDeleteClick(ambulanceData?.id || '')}
                           disabled={!ambulanceData?.id}
                         >
                           <DeleteIcon />
@@ -178,5 +203,6 @@ export function AmbulanceList() {
         </>
       )}
     </Paper>
+    </>
   );
 }

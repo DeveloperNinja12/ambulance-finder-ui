@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDoctorsStore, useDeleteDoctor } from '../../../redux/features/doctors/hooks';
+import { StatusModal } from '../../modal/StatusModal';
 
 type Column = {
   id: keyof Doctor;
@@ -54,23 +55,37 @@ export function DoctorsList() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data, loading, error, meta, dispatchfetchDoctors } = useDoctorsStore();
   const { deleteDoctor } = useDeleteDoctor();
+  const [confirmModalOpen, setConfirmModalOpen] = React.useState(false);
+  const [doctorToDelete, setDoctorToDelete] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    dispatchfetchDoctors({ page: page + 1, limit: rowsPerPage });
+    const apiPage = page + 1;
+    dispatchfetchDoctors({ page: apiPage, limit: rowsPerPage });
   }, [page, rowsPerPage, dispatchfetchDoctors]);
 
-  const handleDelete = async (doctorId: string) => {
-    if (window.confirm('Are you sure you want to delete this doctor?')) {
-      try {
-        await deleteDoctor(doctorId).unwrap();
-        if (data.length === 1 && page > 0) {
-        
-          setPage(page - 1);
-        }
-      } catch (err) {
-        console.error('Failed to delete doctor:', err);
+  const handleDeleteClick = (doctorId: string) => {
+    setDoctorToDelete(doctorId);
+    setConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!doctorToDelete) return;
+    
+    try {
+      await deleteDoctor(doctorToDelete).unwrap();
+      if (data.length === 1 && page > 0) {
+        setPage(page - 1);
       }
+      setDoctorToDelete(null);
+    } catch (err) {
+      console.error('Failed to delete doctor:', err);
+      setDoctorToDelete(null);
     }
+  };
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModalOpen(false);
+    setDoctorToDelete(null);
   };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
@@ -81,8 +96,8 @@ export function DoctorsList() {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newRowsPerPage = +event.target.value;
-    setRowsPerPage(newRowsPerPage);
     setPage(0);
+    setRowsPerPage(newRowsPerPage);
   };
 
   const rows: Doctor[] = React.useMemo(() => {
@@ -100,7 +115,17 @@ export function DoctorsList() {
   }, [data]);
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }} variant="outlined">
+    <>
+      <StatusModal
+        open={confirmModalOpen}
+        onClose={handleCloseConfirmModal}
+        type="confirm"
+        message="Are you sure you want to delete this doctor? This action cannot be undone."
+        onConfirm={handleConfirmDelete}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+      <Paper sx={{ width: '100%', overflow: 'hidden' }} variant="outlined">
       <Typography variant="subtitle1" sx={{ px: 2, pt: 2 }}>
         Doctors
       </Typography>
@@ -153,7 +178,7 @@ export function DoctorsList() {
                         <IconButton
                           color="error"
                           size="small"
-                          onClick={() => handleDelete(doctorData?.id || '')}
+                          onClick={() => handleDeleteClick(doctorData?.id || '')}
                           disabled={!doctorData?.id}
                         >
                           <DeleteIcon />
@@ -178,5 +203,6 @@ export function DoctorsList() {
         </>
       )}
     </Paper>
+    </>
   );
 }

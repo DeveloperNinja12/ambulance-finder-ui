@@ -60,7 +60,8 @@ export const doctorsCollection = createSlice({
           fees: String(doctor.fees),
         }));
         
-        if (newItems.length < state.data.length && state.data.length > 0) {
+        const isCountOnlyFetch = action.payload.meta.limit === 1;
+        if (isCountOnlyFetch && state.data.length > 0) {
           state.meta = action.payload.meta;
         } else {
           state.data = newItems;

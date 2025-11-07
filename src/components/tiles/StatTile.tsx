@@ -1,4 +1,4 @@
-import { Paper, Typography } from '@mui/material'
+import { Paper, Typography, CircularProgress } from '@mui/material'
 import styled from 'styled-components'
 
 const Tile = styled(Paper)<{ $accent: string }>`
@@ -65,15 +65,24 @@ type Props = {
   value: number | string
   color?: string
   fullHeight?: boolean
+  loading?: boolean
 }
 
-export function StatTile({ title, value, color = '#3b82f6' }: Props) {
+export function StatTile({ title, value, color = '#3b82f6', loading = false }: Props) {
   return (
     <Tile elevation={0} variant="outlined" $accent={color}>
       <div className="value">
-        <Typography className="number" component="div">
-          {value}
-        </Typography>
+        {loading ? (
+          <CircularProgress 
+            size={60} 
+            sx={{ color }} 
+            thickness={4}
+          />
+        ) : (
+          <Typography className="number" component="div">
+            {value}
+          </Typography>
+        )}
       </div>
       <Typography className="title" variant="body2" component="div">
         {title}
