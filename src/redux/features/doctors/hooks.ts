@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { type AppDispatch, type RootState } from '../../store';
-import { fetchDoctors, addDoctor as addDoctorThunk } from './api';
+import { fetchDoctors, addDoctor as addDoctorThunk, deleteDoctor as deleteDoctorThunk } from './api';
 
 export const useDoctorsStore = () => {
   const { data, loading, error, meta } = useSelector((state: RootState) => state.doctors);
@@ -32,5 +32,15 @@ export const useAddDoctor = () => {
   }, [dispatch]);
   
   return { addDoctor, loading, error };
+}
+
+export const useDeleteDoctor = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const deleteDoctor = useCallback((doctorId: string) => {
+    return dispatch(deleteDoctorThunk(doctorId));
+  }, [dispatch]);
+  
+  return { deleteDoctor };
 }
 

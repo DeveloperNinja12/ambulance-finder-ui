@@ -12,8 +12,10 @@ import {
   CircularProgress,
   Box,
   Alert,
+  IconButton,
 } from '@mui/material';
-import { useAmbulancesStore } from '../../../redux/features/ambulances/hooks';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useAmbulancesStore, useDeleteAmbulance } from '../../../redux/features/ambulances/hooks';
 
 type Column = {
   id: keyof Ambulance;
@@ -51,10 +53,25 @@ export function AmbulanceList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data, loading, error, meta, dispatchfetchAmbulances } = useAmbulancesStore();
+  const { deleteAmbulance } = useDeleteAmbulance();
 
   React.useEffect(() => {
     dispatchfetchAmbulances({ page: page + 1, limit: rowsPerPage });
   }, [page, rowsPerPage, dispatchfetchAmbulances]);
+
+  const handleDelete = async (ambulanceId: string) => {
+    if (window.confirm('Are you sure you want to delete this ambulance?')) {
+      try {
+        await deleteAmbulance(ambulanceId).unwrap();
+        if (data.length === 1 && page > 0) {
+          
+          setPage(page - 1);
+        }
+      } catch (err) {
+        console.error('Failed to delete ambulance:', err);
+      }
+    }
+  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -115,22 +132,36 @@ export function AmbulanceList() {
                       {col.label}
                     </TableCell>
                   ))}
+                  <TableCell align="center" style={{ fontWeight: 600 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow hover key={index}>
-                    {columns.map((col) => {
-                      const value = row[col.id];
-                      return (
-                        <TableCell key={col.id} align={col.align}>
-                          {value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
+                {rows.map((row, index) => {
+                  const ambulanceData = data[index];
+                  return (
+                    <TableRow hover key={ambulanceData?.id || index}>
+                      {columns.map((col) => {
+                        const value = row[col.id];
+                        return (
+                          <TableCell key={col.id} align={col.align}>
+                            {value}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell align="center">
+                        <IconButton
+                          color="error"
+                          size="small"
+                          onClick={() => handleDelete(ambulanceData?.id || '')}
+                          disabled={!ambulanceData?.id}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

@@ -7,8 +7,8 @@ export const http = {
         return response;
     },
 
-    post: async<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
-        const response = await apiClient.post<T>(url, config) as AxiosResponse;
+    post: async<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<AxiosResponse> => {
+        const response = await apiClient.post<T>(url, data, config) as AxiosResponse;
         return response;
     }
 }

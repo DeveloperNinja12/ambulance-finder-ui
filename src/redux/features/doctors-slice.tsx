@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchDoctors, addDoctor } from './doctors/api';
+import { fetchDoctors, addDoctor, deleteDoctor } from './doctors/api';
 
 interface IDoctor {
   doctorName: string;
@@ -92,6 +92,21 @@ export const doctorsCollection = createSlice({
         }
       })
       .addCase(addDoctor.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteDoctor.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteDoctor.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = state.data.filter((doctor) => doctor.id !== action.payload.id);
+        if (state.meta) {
+          state.meta.totalItems = Math.max(0, state.meta.totalItems - 1);
+          state.meta.totalPages = Math.ceil(state.meta.totalItems / state.meta.limit);
+        }
+        state.error = null;
+      })
+      .addCase(deleteDoctor.rejected, (state) => {
         state.loading = false;
       });
   },

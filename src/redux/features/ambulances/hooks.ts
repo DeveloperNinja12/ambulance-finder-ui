@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { type AppDispatch, type RootState } from '../../store';
-import { fetchAmbulances, addAmbulance as addAmbulanceThunk } from './api';
+import { fetchAmbulances, addAmbulance as addAmbulanceThunk, deleteAmbulance as deleteAmbulanceThunk } from './api';
 
 export const useAmbulancesStore = () => {
   const { data, loading, error, meta } = useSelector((state: RootState) => state.ambulances);
@@ -31,5 +31,15 @@ export const useAddAmbulance = () => {
   }, [dispatch]);
   
   return { addAmbulance, loading, error };
+}
+
+export const useDeleteAmbulance = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const deleteAmbulance = useCallback((ambulanceId: string) => {
+    return dispatch(deleteAmbulanceThunk(ambulanceId));
+  }, [dispatch]);
+  
+  return { deleteAmbulance };
 }
 

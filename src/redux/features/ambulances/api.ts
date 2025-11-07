@@ -50,7 +50,7 @@ export const fetchAmbulances = createAsyncThunk(
             url += `?${queryParams.join('&')}`;
         }
         
-        const response = await http.post<AmbulanceResponse>(url);
+        const response = await http.post<AmbulanceResponse>(url, {});
         return response as unknown as AmbulanceResponse;
     }
 );
@@ -95,6 +95,31 @@ export const addAmbulance = createAsyncThunk(
             const errorData = error && typeof error === 'object' && 'message' in error 
                 ? error 
                 : { message: 'Failed to add ambulance' };
+            return rejectWithValue(errorData);
+        }
+    }
+);
+
+export interface DeleteAmbulancePayload {
+    id: string;
+}
+
+export interface DeleteAmbulanceResponse {
+    success: boolean;
+    message: string;
+}
+
+export const deleteAmbulance = createAsyncThunk(
+    'ambulances/deleteAmbulance',
+    async (ambulanceId: string, { rejectWithValue }) => {
+        try {
+            const payload: DeleteAmbulancePayload = { id: ambulanceId };
+            const response = await apiClient.delete<DeleteAmbulanceResponse>('/ambulances/delete', { data: payload });
+            return { id: ambulanceId, response: response as unknown as DeleteAmbulanceResponse };
+        } catch (error: unknown) {
+            const errorData = error && typeof error === 'object' && 'message' in error 
+                ? error 
+                : { message: 'Failed to delete ambulance' };
             return rejectWithValue(errorData);
         }
     }

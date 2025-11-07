@@ -12,8 +12,10 @@ import {
   CircularProgress,
   Box,
   Alert,
+  IconButton,
 } from '@mui/material';
-import { useDoctorsStore } from '../../../redux/features/doctors/hooks';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useDoctorsStore, useDeleteDoctor } from '../../../redux/features/doctors/hooks';
 
 type Column = {
   id: keyof Doctor;
@@ -51,10 +53,25 @@ export function DoctorsList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data, loading, error, meta, dispatchfetchDoctors } = useDoctorsStore();
+  const { deleteDoctor } = useDeleteDoctor();
 
   React.useEffect(() => {
     dispatchfetchDoctors({ page: page + 1, limit: rowsPerPage });
   }, [page, rowsPerPage, dispatchfetchDoctors]);
+
+  const handleDelete = async (doctorId: string) => {
+    if (window.confirm('Are you sure you want to delete this doctor?')) {
+      try {
+        await deleteDoctor(doctorId).unwrap();
+        if (data.length === 1 && page > 0) {
+        
+          setPage(page - 1);
+        }
+      } catch (err) {
+        console.error('Failed to delete doctor:', err);
+      }
+    }
+  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -115,22 +132,36 @@ export function DoctorsList() {
                       {col.label}
                     </TableCell>
                   ))}
+                  <TableCell align="center" style={{ fontWeight: 600 }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {rows.map((doctor, index) => (
-                  <TableRow hover key={index}>
-                    {columns.map((col) => {
-                      const value = doctor[col.id];
-                      return (
-                        <TableCell key={col.id} align={col.align}>
-                          {value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
+                {rows.map((doctor, index) => {
+                  const doctorData = data[index];
+                  return (
+                    <TableRow hover key={doctorData?.id || index}>
+                      {columns.map((col) => {
+                        const value = doctor[col.id];
+                        return (
+                          <TableCell key={col.id} align={col.align}>
+                            {value}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell align="center">
+                        <IconButton
+                          color="error"
+                          size="small"
+                          onClick={() => handleDelete(doctorData?.id || '')}
+                          disabled={!doctorData?.id}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

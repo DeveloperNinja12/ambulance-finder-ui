@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchAmbulances, addAmbulance } from './ambulances/api';
+import { fetchAmbulances, addAmbulance, deleteAmbulance } from './ambulances/api';
 
 interface IAmbulance {
   vehicleNumber: string;
@@ -89,6 +89,21 @@ export const ambulancesCollection = createSlice({
         }
       })
       .addCase(addAmbulance.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteAmbulance.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteAmbulance.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = state.data.filter((ambulance) => ambulance.id !== action.payload.id);
+        if (state.meta) {
+          state.meta.totalItems = Math.max(0, state.meta.totalItems - 1);
+          state.meta.totalPages = Math.ceil(state.meta.totalItems / state.meta.limit);
+        }
+        state.error = null;
+      })
+      .addCase(deleteAmbulance.rejected, (state) => {
         state.loading = false;
       });
   },

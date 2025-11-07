@@ -50,7 +50,7 @@ export const fetchDoctors = createAsyncThunk(
             url += `?${queryParams.join('&')}`;
         }
         
-        const response = await http.post<DoctorResponse>(url);
+        const response = await http.post<DoctorResponse>(url, {});
         return response as unknown as DoctorResponse;
     }
 );
@@ -71,7 +71,7 @@ export interface AddDoctorPayload {
 export interface AddDoctorResponse {
     success: boolean;
     message: string;
-    data?: any;
+    data?: unknown;
 }
 
 export const addDoctor = createAsyncThunk(
@@ -84,6 +84,31 @@ export const addDoctor = createAsyncThunk(
             const errorData = error && typeof error === 'object' && 'message' in error 
                 ? error 
                 : { message: 'Failed to add doctor' };
+            return rejectWithValue(errorData);
+        }
+    }
+);
+
+export interface DeleteDoctorPayload {
+    id: string;
+}
+
+export interface DeleteDoctorResponse {
+    success: boolean;
+    message: string;
+}
+
+export const deleteDoctor = createAsyncThunk(
+    'doctors/deleteDoctor',
+    async (doctorId: string, { rejectWithValue }) => {
+        try {
+            const payload: DeleteDoctorPayload = { id: doctorId };
+            const response = await apiClient.delete<DeleteDoctorResponse>('/doctors/delete', { data: payload });
+            return { id: doctorId, response: response as unknown as DeleteDoctorResponse };
+        } catch (error: unknown) {
+            const errorData = error && typeof error === 'object' && 'message' in error 
+                ? error 
+                : { message: 'Failed to delete doctor' };
             return rejectWithValue(errorData);
         }
     }
