@@ -54,24 +54,42 @@ export const ambulancesCollection = createSlice({
       })
       .addCase(fetchAmbulances.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload.data.items;
-        state.meta = action.payload.meta;
+        const newItems = action.payload.data.items;
+        
+        if (newItems.length < state.data.length && state.data.length > 0) {
+          state.meta = action.payload.meta;
+        } else {
+          state.data = newItems;
+          state.meta = action.payload.meta;
+        }
+        state.error = null;
       })
       .addCase(fetchAmbulances.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch ambulances';
+        const errorMessage = action.error?.message || action.payload?.message || 'Failed to fetch ambulances';
+        state.error = errorMessage;
       })
       .addCase(addAmbulance.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(addAmbulance.fulfilled, (state, action) => {
         state.loading = false;
         state.data.push(action.payload.data);
+        state.error = null;
+        if (state.meta) {
+          state.meta.totalItems += 1;
+          state.meta.totalPages = Math.ceil(state.meta.totalItems / state.meta.limit);
+        } else {
+          state.meta = {
+            page: 1,
+            limit: 10,
+            totalItems: 1,
+            totalPages: 1,
+          };
+        }
       })
-      .addCase(addAmbulance.rejected, (state, action) => {
+      .addCase(addAmbulance.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to add ambulance';
       });
   },
 });

@@ -49,7 +49,7 @@ const columns: Column[] = [
 
 export function DoctorsList() {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data, loading, error, meta, dispatchfetchDoctors } = useDoctorsStore();
 
   React.useEffect(() => {
@@ -136,7 +136,7 @@ export function DoctorsList() {
           </TableContainer>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 20, 30]}
+            rowsPerPageOptions={[10, 20, 30]}
             component="div"
             count={meta?.totalItems || 0}
             rowsPerPage={rowsPerPage}

@@ -23,19 +23,13 @@ Accident cases are increasing more nowadays. So this app needs to display the li
 
 ## Your Mission
 
-Create a React application that satisfies all must-have requirements above, plus any nice-to-have requirements you wish to include. Please keep your creative juices flowing for designs.
+This React application satisfies all must-have requirements above, 
 
-For that, you’ll need to make requests to your nodeJS API to get JSON content and print it on view.
+Have made requests to the Node-Express nodeJS API web server to get JSON content and print it on view.
 
-You can use a in-memory JSON file for your CRUD operations or use SQLite to make the CRUD operations simple to match the use case.
+Have used a in-memory JSON file for your CRUD operations.
 
-You can use any boilerplate/approach you prefer (nextjs, create react app, ...), but try to keep it simple. We encourage you to use your favorite tools and packages to build a solid React application.
-
-You can assume that you do not have to support legacy browsers. Feel free to use modern features such as fetch or flexbox.
-
-Once you are done with the above requirements, please share your source code via github for review with a proper README. Perhaps also mention if there is some seed data involved to get started. We don't expect you to deploy your application but it in case you do you will receive extra brownie points.
-
-## Tech Requirements
+## Tech Used
 Front End 
 - React
 - Tests: Jest + React Testing Library

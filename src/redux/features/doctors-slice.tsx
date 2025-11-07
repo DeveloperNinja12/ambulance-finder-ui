@@ -55,26 +55,44 @@ export const doctorsCollection = createSlice({
       })
       .addCase(fetchDoctors.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload.data.items.map((doctor) => ({
+        const newItems = action.payload.data.items.map((doctor) => ({
           ...doctor,
           fees: String(doctor.fees),
         }));
-        state.meta = action.payload.meta;
+        
+        if (newItems.length < state.data.length && state.data.length > 0) {
+          state.meta = action.payload.meta;
+        } else {
+          state.data = newItems;
+          state.meta = action.payload.meta;
+        }
+        state.error = null;
       })
       .addCase(fetchDoctors.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch doctors';
+        const errorMessage = action.error?.message || action.payload?.message || 'Failed to fetch doctors';
+        state.error = errorMessage;
       })
       .addCase(addDoctor.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(addDoctor.fulfilled, (state) => {
         state.loading = false;
+        state.error = null;
+        if (state.meta) {
+          state.meta.totalItems += 1;
+          state.meta.totalPages = Math.ceil(state.meta.totalItems / state.meta.limit);
+        } else {
+          state.meta = {
+            page: 1,
+            limit: 10,
+            totalItems: 1,
+            totalPages: 1,
+          };
+        }
       })
-      .addCase(addDoctor.rejected, (state, action) => {
+      .addCase(addDoctor.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to add doctor';
       });
   },
 });
