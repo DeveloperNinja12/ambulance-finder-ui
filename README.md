@@ -6,7 +6,7 @@
 Accident cases are increasing more nowadays. So this app needs to display the list of all nearby ambulance services and doctors based on location with one click.
 
 
-## Product Requirements
+## Product Requirements:
 
 - [x] I want to add, edit, update and delete the ambulances and doctors .
 - [x] I want to see a list of ambulances and doctors.
@@ -21,7 +21,7 @@ Accident cases are increasing more nowadays. So this app needs to display the li
 - [x] I want to see an error state if the list is unavailable.
 - [x] I want to see an empty state if there are no results.
 
-## Your Mission
+## The Mission Objective:
 
 This React application satisfies all must-have requirements above, 
 
