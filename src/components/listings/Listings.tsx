@@ -4,11 +4,11 @@ import { AmbulanceList } from '../lists/ambulances/AmbulanceList'
 
 export function Listings() {
     return (
-        <Grid container spacing={2}>
-            <Grid sx={{ p:4}}>
+        <Grid container spacing={2} sx={{ p: 4 }}>
+            <Grid item size={12}>
                 <DoctorsList />
             </Grid>
-            <Grid sx={{ p:4}}>
+            <Grid item size={12}>
                 <AmbulanceList />
             </Grid>
         </Grid>

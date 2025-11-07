@@ -14,17 +14,18 @@ interface StatusModalProps {
   onClose: () => void;
   type: 'success' | 'error';
   message: string;
+  duration?: number;
 }
 
-export function StatusModal({ open, onClose, type, message }: StatusModalProps) {
+export function StatusModal({ open, onClose, type, message, duration = 5000 }: StatusModalProps) {
   React.useEffect(() => {
     if (open) {
       const timer = setTimeout(() => {
         onClose();
-      }, 5000);
+      }, duration);
       return () => clearTimeout(timer);
     }
-  }, [open, onClose]);
+  }, [open, onClose, duration]);
 
   return (
     <Modal

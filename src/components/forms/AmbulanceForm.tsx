@@ -55,7 +55,9 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
       setModalType('success');
       setModalMessage(result.message || 'Ambulance added successfully!');
       setModalOpen(true);
-      onSubmit();
+      setTimeout(() => {
+        onSubmit();
+      }, 3000);
     } catch (err: unknown) {
       setModalType('error');
       const errorMessage = err && typeof err === 'object' && 'message' in err 
@@ -77,10 +79,11 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
         onClose={handleModalClose}
         type={modalType}
         message={modalMessage}
+        duration={modalType === 'success' ? 3000 : 2000}
       />
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Number"
@@ -89,7 +92,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Type"
@@ -99,7 +102,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Model"
@@ -108,7 +111,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Year"
@@ -118,7 +121,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Color"
@@ -127,7 +130,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Assigned Driver"
@@ -136,7 +139,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Location"
@@ -145,7 +148,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Contact Number"
@@ -154,7 +157,7 @@ export function AmbulanceForm({ onSubmit, onCancel }: AmbulanceFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Vehicle Hospital"

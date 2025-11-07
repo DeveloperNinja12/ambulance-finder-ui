@@ -92,8 +92,8 @@ export function AddItemModal({ open, onClose }: AddItemModalProps) {
             </Box>
 
             {formType === 'selection' && (
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
+              <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
+                <Grid item size={6}>
                   <Card
                     sx={{
                       cursor: 'pointer',
@@ -113,7 +113,7 @@ export function AddItemModal({ open, onClose }: AddItemModalProps) {
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item size={6}>
                   <Card
                     sx={{
                       cursor: 'pointer',

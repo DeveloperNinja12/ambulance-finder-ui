@@ -57,7 +57,9 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
       setModalType('success');
       setModalMessage(result.message || 'Doctor added successfully!');
       setModalOpen(true);
-      onSubmit();
+      setTimeout(() => {
+        onSubmit();
+      }, 3000);
     } catch (err: unknown) {
       setModalType('error');
       const errorMessage = err && typeof err === 'object' && 'message' in err 
@@ -79,10 +81,11 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
         onClose={handleModalClose}
         type={modalType}
         message={modalMessage}
+        duration={modalType === 'success' ? 3000 : 2000}
       />
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Doctor Name"
@@ -91,7 +94,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Designation"
@@ -100,7 +103,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <TextField
             fullWidth
             label="Location"
@@ -109,7 +112,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <TextField
             fullWidth
             multiline
@@ -120,7 +123,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Qualifications (comma separated)"
@@ -130,7 +133,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Experience"
@@ -140,7 +143,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Fees"
@@ -150,7 +153,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Availability"
@@ -160,7 +163,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Languages (comma separated)"
@@ -170,7 +173,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item size={6}>
           <TextField
             fullWidth
             label="Email"
@@ -180,7 +183,7 @@ export function DoctorForm({ onSubmit, onCancel }: DoctorFormProps) {
             required
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
             <Button variant="outlined" onClick={onCancel}>
               Cancel

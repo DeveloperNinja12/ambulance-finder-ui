@@ -2,31 +2,61 @@ import { Paper, Typography } from '@mui/material'
 import styled from 'styled-components'
 
 const Tile = styled(Paper)<{ $accent: string }>`
-  padding: 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: #ffffff;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 12px;
-  width: 30rem;
+  padding: 32px 24px;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+  height: 200px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 
-  h6 {
-    margin: 0;
-    color: rgba(0,0,0,0.65);
-    font-weight: 600;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: ${(p) => p.$accent};
   }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.15);
+  }
+
   .value {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    flex: 1;
+    margin-top: 8px;
   }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 999px;
-    background: ${(p) => p.$accent};
+
+  .number {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: ${(p) => p.$accent};
+    margin-bottom: 8px;
+  }
+
+  .title {
+    margin: 0;
+    color: rgba(0,0,0,0.7);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
   }
 `
 
@@ -37,18 +67,17 @@ type Props = {
   fullHeight?: boolean
 }
 
-export function StatTile({ title, value, color = '#3b82f6', fullHeight }: Props) {
+export function StatTile({ title, value, color = '#3b82f6' }: Props) {
   return (
-    <Tile elevation={0} variant="outlined" $accent={color} style={{ height: fullHeight ? '100%' : undefined }}>
-      <Typography variant="subtitle1" component="h6">
-        {title}
-      </Typography>
+    <Tile elevation={0} variant="outlined" $accent={color}>
       <div className="value">
-        <div className="dot" />
-        <Typography variant="h3" sx={{ fontWeight: 700 }}>
+        <Typography className="number" component="div">
           {value}
         </Typography>
       </div>
+      <Typography className="title" variant="body2" component="div">
+        {title}
+      </Typography>
     </Tile>
   )
 }
